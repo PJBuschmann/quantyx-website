@@ -1,5 +1,5 @@
 /* Shared components: Logo, Nav, Footer, BracketLabel, Visuals */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { LINKEDIN_URL } from "../config.js";
 import { NAV_ITEMS, FOOTER_COLUMNS } from "../routes.js";
 
@@ -199,175 +199,112 @@ export function Footer({ navigate }) {
 
 }
 
-/* --- Hero Visualization: private-markets cashflow / J-curve monitor --- */
+/* --- Hero Visualization: Monte Carlo fan of simulated NAV paths --- */
 export function HeroViz() {
-  const PROFILES = [
-    { tag: "FUND · ALPHA · VINTAGE 2016", cum: [-0.16,-0.50,-0.76,-0.70,-0.46,-0.10,0.24,0.50,0.68,0.80,0.86], nav: [0.14,0.44,0.68,0.80,0.88,0.90,0.80,0.64,0.44,0.26,0.12], tvpi: "1.84x", dpi: "1.42x", irr: "14.2%" },
-    { tag: "FUND · DELTA · VINTAGE 2018", cum: [-0.22,-0.58,-0.84,-0.88,-0.66,-0.34,0.02,0.28,0.48,0.62,0.70], nav: [0.18,0.52,0.76,0.90,0.94,0.86,0.72,0.54,0.36,0.22,0.10], tvpi: "1.61x", dpi: "1.08x", irr: "11.6%" },
-    { tag: "FUND · OMEGA · VINTAGE 2020", cum: [-0.12,-0.42,-0.64,-0.58,-0.30,0.06,0.36,0.58,0.74,0.86,0.92], nav: [0.10,0.36,0.58,0.74,0.82,0.84,0.74,0.58,0.40,0.24,0.10], tvpi: "1.97x", dpi: "1.55x", irr: "17.8%" },
-    { tag: "FUND · SIGMA · VINTAGE 2021", cum: [-0.26,-0.64,-0.90,-0.82,-0.58,-0.22,0.10,0.34,0.54,0.66,0.76], nav: [0.20,0.56,0.82,0.92,0.90,0.80,0.66,0.50,0.34,0.20,0.08], tvpi: "1.72x", dpi: "1.20x", irr: "12.9%" }
-  ];
-
-  const [pIdx, setPIdx] = useState(0);
-  const [t, setT] = useState(0);
-  const [tick, setTick] = useState(0);
-
-  const easeInOut = (x) => x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+  const wrapRef = useRef(null);
+  const canvasRef = useRef(null);
 
   useEffect(() => {
-    let raf;
-    let start = performance.now();
-    const dwell = 1600, morph = 1700;
-    const loop = (now) => {
-      const elapsed = now - start;
-      if (elapsed < dwell) setT(0);
-      else if (elapsed < dwell + morph) setT(easeInOut((elapsed - dwell) / morph));
-      else { setPIdx((i) => (i + 1) % PROFILES.length); start = now; setT(0); }
-      setTick(now / 1000);
-      raf = requestAnimationFrame(loop);
+    const wrap = wrapRef.current, cv = canvasRef.current, ctx = cv.getContext("2d");
+    const LIME = [200, 224, 75], SAGE = [168, 189, 184], PAPER = [247, 245, 240];
+    const rgba = (c, a) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const HIST = 34, STEPS = 60, NPATH = 160, CYCLE = 9;
+
+    // seeded RNG so every cycle is a fresh but deterministic simulation
+    const rng = (seed) => () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+    const gauss = (r) => { let u = 0; while (!u) u = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * r()); };
+    const pct = (arr, q) => { const s = [...arr].sort((a, b) => a - b); return s[Math.floor(q * (s.length - 1))]; };
+
+    let W = 0, H = 0, r, hist, paths, sig, cycle = -1, raf, visible = true;
+    const reset = (seed) => {
+      r = rng(seed); sig = 0.016 + r() * 0.006;
+      hist = [0]; for (let i = 1; i < HIST; i++) hist.push(hist[i - 1] + 0.006 + gauss(r) * 0.018);
+      paths = [];
     };
-    raf = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(raf);
+    const size = () => {
+      const b = wrap.getBoundingClientRect(), d = Math.min(2, window.devicePixelRatio || 1);
+      W = b.width; H = b.height; cv.width = W * d; cv.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0);
+    };
+    size();
+    window.addEventListener("resize", size);
+    const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; });
+    io.observe(wrap);
+
+    const draw = (t) => {
+      const cyc = Math.floor(t / CYCLE);
+      if (cyc !== cycle) { cycle = cyc; reset(11 + cyc * 97); }
+      const ct = t - cyc * CYCLE;
+      const target = reduce ? NPATH : Math.min(NPATH, Math.floor((ct / 5) * NPATH));
+      while (paths.length < target) {
+        const p = [hist[HIST - 1]];
+        for (let i = 1; i <= STEPS; i++) p.push(p[i - 1] + 0.003 + gauss(r) * sig);
+        paths.push(p);
+      }
+      const fade = !reduce && ct > CYCLE - 0.8 ? (CYCLE - ct) / 0.8 : 1;
+
+      ctx.clearRect(0, 0, W, H);
+      const x0 = W * 0.04, xT = W * 0.4, x1 = W * 0.96, base = hist[HIST - 1];
+      const Y = (v) => H * 0.58 - (v - base) * H * 0.75;
+      const XH = (i) => x0 + ((xT - x0) * i) / (HIST - 1);
+      const XF = (i) => xT + ((x1 - xT) * i) / STEPS;
+      ctx.globalAlpha = fade;
+
+      // "today" divider
+      const gd = ctx.createLinearGradient(0, H * 0.12, 0, H * 0.9);
+      gd.addColorStop(0, rgba(SAGE, 0)); gd.addColorStop(0.5, rgba(SAGE, 0.22)); gd.addColorStop(1, rgba(SAGE, 0));
+      ctx.strokeStyle = gd; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(xT, H * 0.12); ctx.lineTo(xT, H * 0.9); ctx.stroke();
+
+      // 5th–95th percentile band + median
+      if (paths.length > 12) {
+        const lo = [], hi = [], md = [];
+        for (let i = 0; i <= STEPS; i++) {
+          const col = paths.map((p) => p[i]);
+          lo.push(pct(col, 0.05)); hi.push(pct(col, 0.95)); md.push(pct(col, 0.5));
+        }
+        const band = Math.min(1, (paths.length - 12) / 60);
+        const gb = ctx.createLinearGradient(xT, 0, x1, 0);
+        gb.addColorStop(0, rgba(LIME, 0.02)); gb.addColorStop(1, rgba(LIME, 0.14 * band));
+        ctx.fillStyle = gb; ctx.beginPath();
+        hi.forEach((v, i) => ctx.lineTo(XF(i), Y(v)));
+        for (let i = STEPS; i >= 0; i--) ctx.lineTo(XF(i), Y(lo[i]));
+        ctx.fill();
+        ctx.strokeStyle = rgba(LIME, 0.9 * band); ctx.lineWidth = 2;
+        ctx.beginPath(); md.forEach((v, i) => ctx.lineTo(XF(i), Y(v))); ctx.stroke();
+        ctx.fillStyle = rgba(LIME, band);
+        ctx.beginPath(); ctx.arc(XF(STEPS), Y(md[STEPS]), 3.5, 0, Math.PI * 2); ctx.fill();
+      }
+
+      // simulated paths, newest ones highlighted
+      ctx.lineWidth = 1;
+      paths.forEach((p, k) => {
+        ctx.strokeStyle = k >= paths.length - 3 ? rgba(PAPER, 0.5) : rgba(LIME, 0.07);
+        ctx.beginPath(); p.forEach((v, i) => ctx.lineTo(XF(i), Y(v))); ctx.stroke();
+      });
+
+      // realised history up to today
+      const gh = ctx.createLinearGradient(x0, 0, xT, 0);
+      gh.addColorStop(0, rgba(PAPER, 0)); gh.addColorStop(1, rgba(PAPER, 0.95));
+      ctx.strokeStyle = gh; ctx.lineWidth = 2;
+      ctx.beginPath(); hist.forEach((v, i) => ctx.lineTo(XH(i), Y(v))); ctx.stroke();
+      ctx.fillStyle = rgba(PAPER, 1);
+      ctx.beginPath(); ctx.arc(xT, Y(base), 4, 0, Math.PI * 2); ctx.fill();
+      ctx.globalAlpha = 1;
+    };
+
+    const t0 = performance.now();
+    const frame = (now) => {
+      if (visible) draw(Math.max(0, now - t0) / 1000);
+      if (!reduce) raf = requestAnimationFrame(frame);
+    };
+    raf = requestAnimationFrame(frame);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", size); io.disconnect(); };
   }, []);
 
-  const A = PROFILES[pIdx];
-  const B = PROFILES[(pIdx + 1) % PROFILES.length];
-  const lerp = (a, b, k) => a + (b - a) * k;
-  const cum = A.cum.map((v, i) => lerp(v, B.cum[i], t));
-  const nav = A.nav.map((v, i) => lerp(v, B.nav[i], t));
-  const shown = t < 0.5 ? A : B;
-
-  const W = 560, H = 400;
-  const ML = 58, MR = 34, MT = 34, MB = 52;
-  const N = cum.length;
-  const ZY = MT + (H - MT - MB) * 0.56;
-  const AMP = (H - MT - MB) * 0.42;
-  const X = (i) => ML + (i * (W - ML - MR)) / (N - 1);
-  const Y = (v) => ZY - v * AMP;
-
-  const line = cum.map((v, i) => `${i === 0 ? "M" : "L"} ${X(i).toFixed(1)} ${Y(v).toFixed(1)}`).join(" ");
-  const area = `${line} L ${X(N - 1).toFixed(1)} ${ZY} L ${X(0).toFixed(1)} ${ZY} Z`;
-  const bw = (W - ML - MR) / (N - 1) * 0.30;
-
-  // scan cursor sweeps across the timeline
-  const cursor = (tick * 0.5) % (N - 1);
-  const ci = Math.min(N - 1, Math.max(0, cursor));
-  const cx = X(ci);
-  const iL = Math.floor(ci), iR = Math.min(N - 1, iL + 1);
-  const cVal = lerp(cum[iL], cum[iR], ci - iL);
-
-  const crossing = (() => {
-    for (let i = 1; i < N; i++) {
-      if (cum[i - 1] < 0 && cum[i] >= 0) {
-        const k = -cum[i - 1] / (cum[i] - cum[i - 1]);
-        return X(i - 1) + (X(i) - X(i - 1)) * k;
-      }
-    }
-    return null;
-  })();
-
   return (
-    <div className="hero-radar-wrap" style={{ position: "relative", width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 18 }}>
-      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10.5, letterSpacing: "0.18em", color: "rgba(200,224,75,0.85)", display: "flex", alignItems: "center", gap: 10, whiteSpace: "nowrap" }}>
-        <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#C8E04B", boxShadow: "0 0 12px rgba(200,224,75,0.9)", animation: "pulse 2s infinite" }}></span>
-        PORTFOLIO MONITORING · {shown.tag}
-      </div>
-
-      <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "min(92%, 560px)", height: "auto", overflow: "visible" }}>
-        <defs>
-          <linearGradient id="jc-pos" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#C8E04B" stopOpacity="0.34" />
-            <stop offset="100%" stopColor="#C8E04B" stopOpacity="0.02" />
-          </linearGradient>
-          <linearGradient id="jc-nav" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#A8BDB8" stopOpacity="0.42" />
-            <stop offset="100%" stopColor="#A8BDB8" stopOpacity="0.08" />
-          </linearGradient>
-          <clipPath id="jc-above"><rect x="0" y="0" width={W} height={ZY} /></clipPath>
-          <clipPath id="jc-below"><rect x="0" y={ZY} width={W} height={H - ZY} /></clipPath>
-          <filter id="jc-glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="2.6" result="b" />
-            <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
-          </filter>
-        </defs>
-
-        {/* horizontal guides */}
-        {[-1, -0.5, 0.5, 1].map((g) => (
-          <line key={"g" + g} x1={ML} y1={Y(g)} x2={W - MR} y2={Y(g)} stroke="rgba(168,189,184,0.16)" strokeWidth="0.6" strokeDasharray="2 4" />
-        ))}
-        {[1, 0.5, -0.5, -1].map((g) => (
-          <text key={"gl" + g} x={ML - 12} y={Y(g) + 3.5} textAnchor="end" fontFamily="'JetBrains Mono', monospace" fontSize="9" fill="rgba(168,189,184,0.55)" letterSpacing="0.08em">
-            {(g > 0 ? "+" : "") + (g * 100).toFixed(0)}
-          </text>
-        ))}
-
-        {/* NAV / residual value bars */}
-        {nav.map((v, i) => (
-          <rect key={"nav" + i} x={X(i) - bw / 2} y={Y(v)} width={bw} height={Math.max(1, ZY - Y(v))} fill="url(#jc-nav)" stroke="rgba(168,189,184,0.5)" strokeWidth="0.5" />
-        ))}
-
-        {/* cumulative net cashflow — split above / below the zero line */}
-        <g clipPath="url(#jc-above)"><path d={area} fill="url(#jc-pos)" /></g>
-        <g clipPath="url(#jc-below)"><path d={area} fill="rgba(200,224,75,0.07)" /></g>
-        <g filter="url(#jc-glow)"><path d={line} fill="none" stroke="#C8E04B" strokeWidth="1.8" strokeLinejoin="round" /></g>
-        {cum.map((v, i) => {
-          const r = 2.6 + Math.sin(tick * 2 + i * 0.7) * 0.35;
-          return (
-            <g key={"pt" + i}>
-              <circle cx={X(i)} cy={Y(v)} r={r + 3.4} fill="rgba(200,224,75,0.16)" />
-              <circle cx={X(i)} cy={Y(v)} r={r} fill="#C8E04B" />
-              <circle cx={X(i)} cy={Y(v)} r={Math.max(0.6, r - 1.1)} fill="#0F221F" />
-            </g>
-          );
-        })}
-
-        {/* zero line */}
-        <line x1={ML} y1={ZY} x2={W - MR} y2={ZY} stroke="rgba(168,189,184,0.6)" strokeWidth="0.9" />
-        <text x={ML - 12} y={ZY + 3.5} textAnchor="end" fontFamily="'JetBrains Mono', monospace" fontSize="9" fill="rgba(168,189,184,0.75)">0</text>
-
-        {/* break-even marker */}
-        {crossing !== null && (
-          <g>
-            <line x1={crossing} y1={MT - 6} x2={crossing} y2={H - MB} stroke="rgba(200,224,75,0.35)" strokeWidth="0.8" strokeDasharray="3 3" />
-            <text x={crossing + 6} y={MT + 2} fontFamily="'JetBrains Mono', monospace" fontSize="8.5" fill="rgba(200,224,75,0.8)" letterSpacing="0.12em">BREAK-EVEN</text>
-          </g>
-        )}
-
-        {/* scan cursor */}
-        <g>
-          <line x1={cx} y1={MT - 6} x2={cx} y2={H - MB} stroke="rgba(247,245,240,0.16)" strokeWidth="1" />
-          <circle cx={cx} cy={Y(cVal)} r="3.4" fill="none" stroke="#F7F5F0" strokeWidth="1" opacity="0.8" />
-        </g>
-
-        {/* x axis */}
-        <line x1={ML} y1={H - MB} x2={W - MR} y2={H - MB} stroke="rgba(168,189,184,0.35)" strokeWidth="0.7" />
-        {cum.map((_, i) => i % 2 === 0 && (
-          <g key={"ax" + i}>
-            <line x1={X(i)} y1={H - MB} x2={X(i)} y2={H - MB + 5} stroke="rgba(168,189,184,0.45)" strokeWidth="0.7" />
-            <text x={X(i)} y={H - MB + 18} textAnchor="middle" fontFamily="'JetBrains Mono', monospace" fontSize="9" fill="rgba(168,189,184,0.6)" letterSpacing="0.1em">Y{i}</text>
-          </g>
-        ))}
-        <text x={W - MR} y={H - MB + 36} textAnchor="end" fontFamily="'JetBrains Mono', monospace" fontSize="8.5" fill="rgba(168,189,184,0.45)" letterSpacing="0.14em">FUND LIFE · YEARS</text>
-
-        {/* metrics */}
-        {[{ k: "TVPI", v: shown.tvpi }, { k: "DPI", v: shown.dpi }, { k: "NET IRR", v: shown.irr }].map((m, i) => (
-          <g key={m.k} transform={`translate(${ML + i * 118}, ${MT - 12})`}>
-            <text x="0" y="0" fontFamily="'JetBrains Mono', monospace" fontSize="8.5" fill="rgba(168,189,184,0.6)" letterSpacing="0.16em">{m.k}</text>
-            <text x="52" y="1" fontFamily="'Inter Tight', sans-serif" fontSize="14" fontWeight="500" fill="#C8E04B" letterSpacing="0.02em">{m.v}</text>
-          </g>
-        ))}
-      </svg>
-
-      <div style={{ display: "flex", gap: 24, fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: "0.14em", color: "var(--sage-400)", whiteSpace: "nowrap" }}>
-        <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ width: 14, height: 2, background: "#C8E04B", boxShadow: "0 0 8px rgba(200,224,75,0.6)" }}></span>
-          CUMULATIVE NET CASHFLOW
-        </span>
-        <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ width: 10, height: 10, background: "rgba(168,189,184,0.35)", border: "1px solid rgba(168,189,184,0.7)" }}></span>
-          NAV · RESIDUAL VALUE
-        </span>
-      </div>
+    <div ref={wrapRef} style={{ position: "relative", width: "100%", height: "100%" }} aria-hidden="true">
+      <canvas ref={canvasRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", display: "block" }} />
     </div>
   );
 }
