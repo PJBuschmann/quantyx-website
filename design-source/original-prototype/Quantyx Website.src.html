@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Quantyx Advisors — Risk Management &amp; Valuations for Private Markets</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="root"></div>
+
+<template id="__bundler_thumbnail" data-bg-color="#0F221F">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#0F221F"/>
+    <g stroke="#1F3A36" stroke-width="1" opacity="0.7">
+      <line x1="0" y1="200" x2="1200" y2="200"/>
+      <line x1="0" y1="400" x2="1200" y2="400"/>
+      <line x1="0" y1="600" x2="1200" y2="600"/>
+      <line x1="300" y1="0" x2="300" y2="800"/>
+      <line x1="600" y1="0" x2="600" y2="800"/>
+      <line x1="900" y1="0" x2="900" y2="800"/>
+    </g>
+    <text x="600" y="380" text-anchor="middle" fill="#F7F5F0" font-family="Georgia, serif" font-size="120" font-weight="500" letter-spacing="8">QUANTYX</text>
+    <text x="600" y="460" text-anchor="middle" fill="#8FA8A3" font-family="monospace" font-size="22" letter-spacing="6">[ YX ]</text>
+    <text x="600" y="540" text-anchor="middle" fill="#C8E04B" font-family="monospace" font-size="14" letter-spacing="4">RISK · VALUATION · PRIVATE MARKETS</text>
+  </svg>
+</template>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="shared.jsx"></script>
+<script type="text/babel" src="pages/home.jsx"></script>
+<script type="text/babel" src="pages/qrm.jsx"></script>
+<script type="text/babel" src="pages/risk.jsx"></script>
+<script type="text/babel" src="pages/valuation.jsx"></script>
+<script type="text/babel" src="pages/lp.jsx"></script>
+<script type="text/babel" src="pages/content.jsx"></script>
+<script type="text/babel" src="pages/about-contact.jsx"></script>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+function App() {
+  const [route, setRoute] = useState(() => {
+    const h = window.location.hash.replace(/^#/, "");
+    return h || "/";
+  });
+
+  const navigate = (to) => {
+    window.location.hash = to;
+    setRoute(to);
+  };
+
+  useEffect(() => {
+    const onHash = () => setRoute(window.location.hash.replace(/^#/, "") || "/");
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
+
+  // Home uses transparent nav overlay on dark hero
+  if (route === "/" || route === "") {
+    return (
+      <React.Fragment>
+        <Nav route={route} navigate={navigate} />
+        <Home navigate={navigate} />
+      </React.Fragment>
+    );
+  }
+
+  // QRM (standalone flagship section)
+  if (route === "/qrm") return <QRMPlatform route={route} navigate={navigate} />;
+
+  // Risk Management
+  if (route === "/risk-management/qrm-platform") return <QRMPlatform route="/qrm" navigate={navigate} />;
+  if (route === "/risk-management/risk-managed-service") return <RiskManagedService route={route} navigate={navigate} />;
+  if (route === "/risk-management/risk-delegation-function") return <RiskDelegation route={route} navigate={navigate} />;
+  if (route === "/risk-management/regulatory-reporting") return <RegulatoryReporting route={route} navigate={navigate} />;
+  if (route === "/risk-management") return <RiskDelegation route="/risk-management/risk-delegation-function" navigate={navigate} />;
+
+  // Valuation
+  if (route === "/valuation/service-coverage") return <ServiceCoverage route={route} navigate={navigate} />;
+  if (route === "/valuation/valuation-delegation-function") return <ValuationDelegation route={route} navigate={navigate} />;
+  if (route === "/valuation") return <ValuationDelegation route="/valuation/valuation-delegation-function" navigate={navigate} />;
+
+  // Limited Partners
+  if (route === "/lp/portfolio-monitoring" || route === "/lp/risk-management") return <LPPortfolioMonitoring route="/lp/portfolio-monitoring" navigate={navigate} />;
+  if (route === "/lp/nav-review" || route === "/lp/fair-value-adjustment") return <LPNavReview route="/lp/nav-review" navigate={navigate} />;
+  if (route === "/lp/pre-deal-analysis") return <LPPreDeal route={route} navigate={navigate} />;
+  if (route === "/lp/strategic-asset-allocation") return <LPStrategicAllocation route={route} navigate={navigate} />;
+  if (route === "/lp/wm-reporting") return <LPWMReporting route={route} navigate={navigate} />;
+  if (route === "/lp" || route === "/lp/overview") return <LPPortfolioMonitoring route="/lp/portfolio-monitoring" navigate={navigate} />;
+
+  // About
+  if (route === "/about/mission") return <Mission route={route} navigate={navigate} />;
+  if (route === "/about/who-we-are") return <WhoWeAre route={route} navigate={navigate} />;
+  if (route === "/about/people") return <People route={route} navigate={navigate} />;
+  if (route === "/about/partners") return <Partners route={route} navigate={navigate} />;
+  if (route === "/about") return <Mission route="/about/mission" navigate={navigate} />;
+
+  if (route === "/news") return <News route={route} navigate={navigate} />;
+  if (route === "/careers") return <Careers route={route} navigate={navigate} />;
+  if (route === "/contact") return <Contact route={route} navigate={navigate} />;
+
+  // 404 fallback to home
+  return (
+    <React.Fragment>
+      <Nav route="/" navigate={navigate} />
+      <Home navigate={navigate} />
+    </React.Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
