@@ -1,6 +1,10 @@
 /* Home Page */
 import React from "react";
 import { Footer, Page, BracketLabel, Arrow, HeroViz, AssetIcon } from "../components/shared.jsx";
+import { NAV_ITEMS } from "../routes.js";
+
+/* Hero links open the same landing page as the main nav (first sub-menu item). */
+const navPath = (base) => NAV_ITEMS.find((i) => i.base === base).path;
 
 const HOME_ASSETS = [
   { t: "Private Equity", d: "LBO, Expansion & Growth, Turnaround, Special Situations & Deep Value." },
@@ -31,10 +35,10 @@ export function Home({ navigate }) {
             </p>
             <div className="hero-links">
               {[
-                { n: "01", label: "Quantyx RM", path: "/qrm" },
-                { n: "02", label: "Risk Management", path: "/risk-management/risk-delegation-function" },
-                { n: "03", label: "Valuations", path: "/valuation/valuation-delegation-function" },
-                { n: "04", label: "Limited Partners", path: "/lp/portfolio-monitoring" }].
+                { n: "01", label: "Quantyx RM", path: navPath("/qrm") },
+                { n: "02", label: "Risk Management", path: navPath("/risk-management") },
+                { n: "03", label: "Valuations", path: navPath("/valuation") },
+                { n: "04", label: "Limited Partners", path: navPath("/lp") }].
                 map((item) =>
                   <button key={item.n} className="hero-link" onClick={() => navigate(item.path)}>
                     <span className="hero-link-num">{item.n}</span>
