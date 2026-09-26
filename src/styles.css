@@ -1088,3 +1088,23 @@ img { max-width: 100%; display: block; }
   .form { padding: 28px; }
   .highlight { grid-template-columns: 1fr; padding: 28px; }
 }
+
+/* --- Contact: small screens --- */
+.contact-layout > * { min-width: 0; }
+.field input, .field textarea, .field select { width: 100%; min-width: 0; }
+.office-card .person-info .contact-line { overflow-wrap: anywhere; }
+@media (max-width: 900px) {
+  .contact-layout { grid-template-columns: minmax(0, 1fr) !important; gap: 48px; padding: 140px 24px 80px; }
+}
+@media (max-width: 640px) {
+  .contact-layout { padding: 110px 20px 64px; gap: 40px; }
+  .contact-layout .appear[style] { margin-bottom: 32px !important; }
+  .office-card { padding: 24px; }
+  .office-card h3 { font-size: 26px; }
+  .form { padding: 24px 20px; }
+  .form h3 { font-size: 32px; }
+  .field-row { grid-template-columns: 1fr; gap: 0; }
+  /* 16px stops iOS Safari zooming into the field on focus */
+  .field input, .field textarea, .field select { font-size: 16px; }
+  .form .btn { width: 100%; justify-content: center; }
+}
