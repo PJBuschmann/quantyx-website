@@ -1108,3 +1108,6 @@ img { max-width: 100%; display: block; }
   .field input, .field textarea, .field select { font-size: 16px; }
   .form .btn { width: 100%; justify-content: center; }
 }
+
+/* Contact form honeypot: off-screen rather than display:none, which some bots skip */
+.hp-field { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }

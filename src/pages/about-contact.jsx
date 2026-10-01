@@ -553,7 +553,7 @@ export function Partners({ route, navigate }) {
 
 /* ---------- CONTACT ---------- */
 export function Contact({ route, navigate }) {
-  const [form, setForm] = React.useState({ name: "", company: "", email: "", phone: "", subject: "General Inquiry", message: "" });
+  const [form, setForm] = React.useState({ name: "", company: "", email: "", phone: "", subject: "General Inquiry", message: "", website: "" });
   const [sent, setSent] = React.useState(false);
   const [sending, setSending] = React.useState(false);
   const [error, setError] = React.useState("");
@@ -651,6 +651,11 @@ export function Contact({ route, navigate }) {
             </div> :
 
           <React.Fragment>
+              {/* Honeypot: hidden from people and assistive tech; bots that fill
+                  it in are dropped server-side by api/contact.js. */}
+              <div className="hp-field" aria-hidden="true">
+                <label>Website <input type="text" tabIndex={-1} autoComplete="off" value={form.website} onChange={upd("website")} /></label>
+              </div>
               <div className="field-row">
                 <div className="field">
                   <label>Full Name *</label>
