@@ -55,7 +55,7 @@ export const ROUTES = [
     component: "ICTServices",
     title: "ICT Services - DORA, ICT Risk & Penetration Testing | Quantyx Advisors",
     description:
-      "ICT Risk Delegation Function under DORA, with controls on ICT infrastructure and third-party providers, plus AI-driven resilience monitoring and penetration testing.",
+      "ICT Risk Delegation Function under DORA, with controls on ICT infrastructure and third-party providers, plus AI risk checks and penetration testing.",
     priority: 0.8,
   },
 
