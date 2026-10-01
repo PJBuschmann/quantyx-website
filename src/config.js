@@ -22,7 +22,7 @@ export const OFFICES = {
     contact: {
       name: "Paolo Orlandi",
       role: "Head of Business Development",
-      email: "paolo.orlandi@quantyx.com",
+      email: "porlandi@quantyx.com",
       phone: "", // TODO: real number — the prototype had +39 02 0000 0000
     },
   },
@@ -33,7 +33,7 @@ export const OFFICES = {
     contact: {
       name: "Michel Lempicki",
       role: "Head of Business Development",
-      email: "michel.lempicki@quantyx.com",
+      email: "mlempicki@quantyx.com",
       phone: "", // TODO: real number — the prototype had +352 000 000 000
     },
   },
