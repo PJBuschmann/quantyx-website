@@ -50,6 +50,14 @@ export const ROUTES = [
       "Production and filing support for AIFMD Annex IV, Solvency II TPT, PRIIPs KID and other regulatory reporting obligations.",
     priority: 0.8,
   },
+  {
+    path: "/risk-management/ict-services",
+    component: "ICTServices",
+    title: "ICT Services - DORA, ICT Risk & Penetration Testing | Quantyx Advisors",
+    description:
+      "DORA compliance, delegated ICT risk management and digital operational resilience support, including AI-driven monitoring and penetration testing.",
+    priority: 0.8,
+  },
 
   /* --- Valuation --- */
   {
@@ -195,7 +203,8 @@ export const NAV_ITEMS = [
   sub: [
   { label: "Risk Support Service", path: "/risk-management/risk-managed-service" },
   { label: "Risk Delegation Function", path: "/risk-management/risk-delegation-function" },
-  { label: "Regulatory Reporting", path: "/risk-management/regulatory-reporting" }]
+  { label: "Regulatory Reporting", path: "/risk-management/regulatory-reporting" },
+  { label: "ICT Services", path: "/risk-management/ict-services" }]
 
 },
 {
@@ -212,7 +221,7 @@ export const NAV_ITEMS = [
   { label: "NAV Review & Fair Value Adjustment", path: "/lp/nav-review" },
   { label: "Pre-Deal Analysis", path: "/lp/pre-deal-analysis" },
   { label: "Strategic Asset Allocation", path: "/lp/strategic-asset-allocation" },
-  { label: "WM Client-Ready Reporting", path: "/lp/wm-reporting" }]
+  { label: "Wealth Management Client-Ready Reporting", path: "/lp/wm-reporting" }]
 
 },
 { label: "News", path: "/news", base: "/news" },

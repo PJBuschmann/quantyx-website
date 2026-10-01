@@ -6,7 +6,7 @@ import { useSeo } from "./useSeo.js";
 
 import { Home } from "./pages/home.jsx";
 import { QRMPlatform } from "./pages/qrm.jsx";
-import { RiskDelegation, RiskManagedService, RegulatoryReporting } from "./pages/risk.jsx";
+import { RiskDelegation, RiskManagedService, RegulatoryReporting, ICTServices } from "./pages/risk.jsx";
 import { ValuationDelegation, ServiceCoverage } from "./pages/valuation.jsx";
 import {
   LPPortfolioMonitoring,
@@ -26,6 +26,7 @@ const PAGES = {
   RiskDelegation,
   RiskManagedService,
   RegulatoryReporting,
+  ICTServices,
   ValuationDelegation,
   ServiceCoverage,
   LPPortfolioMonitoring,

@@ -7,7 +7,7 @@ const LP_ITEMS = [
   { label: "NAV Review & Fair Value Adjustment", path: "/lp/nav-review" },
   { label: "Pre-Deal Analysis", path: "/lp/pre-deal-analysis" },
   { label: "Strategic Asset Allocation", path: "/lp/strategic-asset-allocation" },
-  { label: "WM Client-Ready Reporting", path: "/lp/wm-reporting" },
+  { label: "Wealth Management Client-Ready Reporting", path: "/lp/wm-reporting" },
 ];
 
 export function LPLayout({ route, navigate, children }) {
@@ -174,7 +174,7 @@ export function LPWMReporting({ route, navigate }) {
     <LPOfferList
       route={route} navigate={navigate}
       idx="05" tag="NEW"
-      title={<>WM Client-Ready <em>Reporting</em></>}
+      title={<>Wealth Management Client-Ready <em>Reporting</em></>}
       intro="Reporting on private-market holdings that wealth managers and private banks can put straight in front of their own end clients — accurate, look-through and presentation-ready."
       kicker="WHAT WE OFFER"
       items={[

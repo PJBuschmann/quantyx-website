@@ -6,6 +6,7 @@ const RM_ITEMS = [
   { label: "Risk Support Service", path: "/risk-management/risk-managed-service" },
   { label: "Risk Delegation Function", path: "/risk-management/risk-delegation-function" },
   { label: "Regulatory Reporting", path: "/risk-management/regulatory-reporting" },
+  { label: "ICT Services", path: "/risk-management/ict-services" },
 ];
 
 const ASSET_CLASSES = [
@@ -119,7 +120,7 @@ export function RiskManagedService({ route, navigate }) {
 
 export function RiskDelegation({ route, navigate }) {
   const items = [
-    { t: "Risk Management at AIFM and Fund Level", d: "We perform the risk function at AIFM level as well as at fund level — covering operational risks and, on request, ICT risk alongside portfolio risk." },
+    { t: "Risk Management at AIFM and Fund Level", d: "We perform the risk function at AIFM level as well as at fund level — covering operational risks alongside portfolio risk." },
     { t: "Risk Framework Definition and Maintenance", d: "We support the design and ongoing update of policies, limits, and procedures aligned with the client's risk profile and applicable regulatory requirements." },
     { t: "Risk Identification, Measurement, and Monitoring", d: "We consistently monitor all key risk indicators applying advanced quantitative methodologies." },
     { t: "Independent and Transparent Reporting", d: "We deliver clear and detailed periodic reports to senior management and governing bodies, and relevant authorities if required." },
@@ -132,7 +133,7 @@ export function RiskDelegation({ route, navigate }) {
         <h1>Risk Delegation <em>Function</em></h1>
       </div>
       <p className="content-intro appear">
-        The Risk Delegation Function provides a comprehensive outsourcing service for risk management and control activities — performed at AIFM level as well as at fund level, including operational risks and, on request, ICT risk — designed to support AIFMs in meeting the highest regulatory and operational standards in line with AIFMD EU regulation.
+        The Risk Delegation Function provides a comprehensive outsourcing service for risk management and control activities — performed at AIFM level as well as at fund level, including operational risks — designed to support AIFMs in meeting the highest regulatory and operational standards in line with AIFMD EU regulation.
       </p>
       <div className="appear" style={{marginTop: 72}}>
       </div>
@@ -165,6 +166,36 @@ export function RegulatoryReporting({ route, navigate }) {
       </div>
       <p className="content-intro appear">
         Quantyx Advisors' Regulatory Reporting services support financial institutions in meeting their regulatory or business obligations through the accurate computation and reporting of risk indicators. We combine deep regulatory expertise with robust data management and analytical capabilities to ensure timely, reliable, and fully compliant reporting across multiple regulatory frameworks.
+      </p>
+      <div className="appear" style={{marginTop: 72}}>
+      </div>
+      <div className="numbered-list appear">
+        {items.map((it, i) => (
+          <div key={i} className="numbered-item">
+            <span className="n-num"></span>
+            <div>
+              <h4>{it.t}</h4>
+              <p>{it.d}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </RiskLayout>
+  );
+}
+
+export function ICTServices({ route, navigate }) {
+  const items = [
+    { t: "ICT Risk", d: "We help clients meet the requirements of the Digital Operational Resilience Act (DORA) in line with supervisory guidance, bringing efficiency and control to their ICT risk activities. Quantyx can also take on responsibility for the ICT risk function itself, under a formal delegation of ICT risk management." },
+    { t: "ICT Support", d: "We strengthen our clients' digital operational resilience, using advanced AI models to identify, assess and monitor ICT threats and vulnerabilities. We also carry out penetration tests to assess the robustness and resilience of systems and infrastructure." },
+  ];
+  return (
+    <RiskLayout route={route} navigate={navigate}>
+      <div className="content-head appear">
+        <h1>ICT <em>Services</em></h1>
+      </div>
+      <p className="content-intro appear">
+        Quantyx Advisors' ICT Services support financial institutions in managing ICT risk and strengthening their digital operational resilience. We combine regulatory expertise in DORA with hands-on technical capabilities, from delegated ICT risk management to AI-driven monitoring and penetration testing.
       </p>
       <div className="appear" style={{marginTop: 72}}>
       </div>
