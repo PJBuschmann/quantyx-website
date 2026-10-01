@@ -186,7 +186,7 @@ export function RegulatoryReporting({ route, navigate }) {
 
 export function ICTServices({ route, navigate }) {
   const items = [
-    { t: "ICT Risk", d: "We help clients meet the requirements of the Digital Operational Resilience Act (DORA) in line with supervisory guidance, bringing efficiency and control to their ICT risk activities. Quantyx can also take on responsibility for the ICT risk function itself, under a formal delegation of ICT risk management." },
+    { t: "ICT Risk", d: "Quantyx acts as the ICT Risk Delegation Function, taking on responsibility for ICT risk and helping AIFMs meet the requirements of the Digital Operational Resilience Act (DORA) in line with supervisory guidance. We control the robustness of the arrangements the AIFM has in place to manage its ICT infrastructure, and we carry out controls on the AIFM's third-party ICT providers, bringing efficiency and control to these activities." },
     { t: "ICT Support", d: "We strengthen our clients' digital operational resilience, using advanced AI models to identify, assess and monitor ICT threats and vulnerabilities. We also carry out penetration tests to assess the robustness and resilience of systems and infrastructure." },
   ];
   return (
@@ -195,7 +195,7 @@ export function ICTServices({ route, navigate }) {
         <h1>ICT <em>Services</em></h1>
       </div>
       <p className="content-intro appear">
-        Quantyx Advisors' ICT Services support financial institutions in managing ICT risk and strengthening their digital operational resilience. We combine regulatory expertise in DORA with hands-on technical capabilities, from delegated ICT risk management to AI-driven monitoring and penetration testing.
+        Quantyx Advisors' ICT Services support financial institutions in managing ICT risk and strengthening their digital operational resilience. We combine regulatory expertise in DORA with hands-on technical capabilities, from acting as the ICT Risk Delegation Function to AI-driven monitoring and penetration testing.
       </p>
       <div className="appear" style={{marginTop: 72}}>
       </div>
