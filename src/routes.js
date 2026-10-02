@@ -53,7 +53,7 @@ export const ROUTES = [
   {
     path: "/risk-management/ict-services",
     component: "ICTServices",
-    title: "ICT Services - DORA, ICT Risk & Penetration Testing | Quantyx Advisors",
+    title: "ICT Risk Services - DORA, ICT Risk & Penetration Testing | Quantyx Advisors",
     description:
       "ICT Risk Delegation Function under DORA, with controls on ICT infrastructure and third-party providers, plus AI risk checks and penetration testing.",
     priority: 0.8,
@@ -204,7 +204,7 @@ export const NAV_ITEMS = [
   { label: "Risk Support Service", path: "/risk-management/risk-managed-service" },
   { label: "Risk Delegation Function", path: "/risk-management/risk-delegation-function" },
   { label: "Regulatory Reporting", path: "/risk-management/regulatory-reporting" },
-  { label: "ICT Services", path: "/risk-management/ict-services" }]
+  { label: "ICT Risk Services", path: "/risk-management/ict-services" }]
 
 },
 {

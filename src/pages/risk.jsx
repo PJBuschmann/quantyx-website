@@ -6,7 +6,7 @@ const RM_ITEMS = [
   { label: "Risk Support Service", path: "/risk-management/risk-managed-service" },
   { label: "Risk Delegation Function", path: "/risk-management/risk-delegation-function" },
   { label: "Regulatory Reporting", path: "/risk-management/regulatory-reporting" },
-  { label: "ICT Services", path: "/risk-management/ict-services" },
+  { label: "ICT Risk Services", path: "/risk-management/ict-services" },
 ];
 
 const ASSET_CLASSES = [
@@ -186,16 +186,33 @@ export function RegulatoryReporting({ route, navigate }) {
 
 export function ICTServices({ route, navigate }) {
   const items = [
-    { t: "ICT Risk Delegation", d: "Quantyx acts as the ICT Risk Delegation Function, taking on responsibility for ICT risk and helping AIFMs meet the requirements of the Digital Operational Resilience Act (DORA) in line with supervisory guidance. We control the robustness of the arrangements the AIFM has in place to manage its ICT infrastructure, and we carry out controls on the AIFM's third-party ICT providers, bringing efficiency and control to these activities." },
-    { t: "ICT Support", d: "We strengthen our clients' digital operational resilience by checking that advanced AI models do not undermine the AIFM's systems, data or operations. We also carry out penetration tests to assess the robustness and resilience of its systems and infrastructure and we help the AIFM boards in meeting the regulatory reporting requirements." },
+    {
+      t: "ICT Risk Delegation",
+      d: [
+        "Quantyx acts as the ICT Risk Delegation Function, taking on responsibility for ICT risk and helping AIFMs meet the requirements of the Digital Operational Resilience Act (DORA) in line with supervisory guidance.",
+        "As part of this role, we perform an annual ICT risk assessment covering the main areas of the DORA framework, including ICT risk management, incident management, third-party ICT risk, crisis management and business continuity, as well as the internal control environment supporting digital operational resilience.",
+        "Our assessment starts by mapping the AIFM's ICT assets and its potential attack surface in order to identify the relevant risk scenarios and determine the related gross risk exposure. We then assess the controls in place and the level of mitigation they provide, allowing us to determine the AIFM's residual ICT risk exposure.",
+        "The results are documented in an annual ICT risk report and supporting dashboard, together with an action plan addressing the main areas for improvement. The action plan is monitored over time and provides an input into the following year's assessment, creating a continuous cycle of risk assessment and improvement.",
+        "We also perform controls on third-party ICT providers, assessing their level of criticality, monitoring contractual service levels and reviewing ICT agreements against the relevant DORA requirements.",
+      ],
+    },
+    {
+      t: "ICT Support",
+      d: [
+        "We strengthen our clients' digital operational resilience through targeted technical assessments and specialist support.",
+        "Emerging and frontier technologies, including advanced AI solutions, are incorporated into our ICT risk assessment so that new sources of technological risk are considered as part of the AIFM's overall risk exposure and control framework.",
+        "We also support penetration testing activities to assess the robustness and resilience of the AIFM's systems and infrastructure and identify potential vulnerabilities.",
+        "Finally, we support AIFM boards in overseeing ICT risk by providing clear reporting on the main findings, risk exposures and remediation actions. The results of our assessments are presented to the Board, supporting its oversight responsibilities and regulatory reporting requirements.",
+      ],
+    },
   ];
   return (
     <RiskLayout route={route} navigate={navigate}>
       <div className="content-head appear">
-        <h1>ICT <em>Services</em></h1>
+        <h1>ICT Risk <em>Services</em></h1>
       </div>
       <p className="content-intro appear">
-        Quantyx Advisors' ICT Services support financial institutions in managing ICT risk and strengthening their digital operational resilience. We combine regulatory expertise in DORA with hands-on technical capabilities.
+        Quantyx Advisors' ICT Services support financial institutions in managing ICT risk and strengthening their digital operational resilience. We combine regulatory expertise in DORA with hands-on technical capabilities, tailoring our approach to the size, complexity and risk profile of each AIFM in line with the principle of proportionality.
       </p>
       <div className="appear" style={{marginTop: 72}}>
       </div>
@@ -205,7 +222,7 @@ export function ICTServices({ route, navigate }) {
             <span className="n-num"></span>
             <div>
               <h4>{it.t}</h4>
-              <p>{it.d}</p>
+              {it.d.map((para, j) => <p key={j}>{para}</p>)}
             </div>
           </div>
         ))}
