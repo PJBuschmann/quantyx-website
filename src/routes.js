@@ -89,9 +89,9 @@ export const ROUTES = [
   {
     path: "/lp/nav-review",
     component: "LPNavReview",
-    title: "NAV Review & Fair Value Adjustment - Quantyx Advisors",
+    title: "NAV Review, Fair Value Adjustment & Additional Valuation Adjustments - Quantyx Advisors",
     description:
-      "Independent review of GP-reported NAVs and fair value adjustments for limited partners and wealth managers.",
+      "Independent review of GP-reported NAVs, fair value adjustments, and calculation and validation of prudential Additional Valuation Adjustments (AVA).",
     priority: 0.8,
   },
   {
@@ -218,7 +218,7 @@ export const NAV_ITEMS = [
   label: "Limited Partners", path: "/lp/portfolio-monitoring", base: "/lp",
   sub: [
   { label: "Portfolio Monitoring & Risk Analysis", path: "/lp/portfolio-monitoring" },
-  { label: "NAV Review & Fair Value Adjustment", path: "/lp/nav-review" },
+  { label: "NAV Review, FVA and AVA", path: "/lp/nav-review" },
   { label: "Pre-Deal Analysis", path: "/lp/pre-deal-analysis" },
   { label: "Strategic Asset Allocation", path: "/lp/strategic-asset-allocation" },
   { label: "Wealth Management Client-Ready Reporting", path: "/lp/wm-reporting" }]

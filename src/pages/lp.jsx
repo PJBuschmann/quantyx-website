@@ -4,7 +4,7 @@ import { Nav, Footer, Page, SubNav } from "../components/shared.jsx";
 
 const LP_ITEMS = [
   { label: "Portfolio Monitoring & Risk Analysis", path: "/lp/portfolio-monitoring" },
-  { label: "NAV Review & Fair Value Adjustment", path: "/lp/nav-review" },
+  { label: "NAV Review, FVA and AVA", path: "/lp/nav-review" },
   { label: "Pre-Deal Analysis", path: "/lp/pre-deal-analysis" },
   { label: "Strategic Asset Allocation", path: "/lp/strategic-asset-allocation" },
   { label: "Wealth Management Client-Ready Reporting", path: "/lp/wm-reporting" },
@@ -99,7 +99,7 @@ export function LPNavReview({ route, navigate }) {
   return (
     <LPLayout route={route} navigate={navigate}>
       <div className="content-head appear">
-        <h1>NAV Review <em>&amp; Fair Value Adjustment</em></h1>
+        <h1>NAV Review, <em>FVA and AVA</em></h1>
       </div>
       <p className="content-intro appear">
         An additional, independent layer of oversight on reported NAVs — and, where reported values may not reflect realizable value, a quantitative framework to size the gap.
