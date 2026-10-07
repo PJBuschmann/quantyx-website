@@ -75,7 +75,6 @@ export function LPSplitTracks({ tracks }) {
       {tracks.map((tr, ti) => (
         <section key={ti} className="lp-track">
           <header className="lp-track-head">
-            <span className="lp-track-key mono">{tr.key}</span>
             <h3>{tr.title}</h3>
             <p>{tr.lead}</p>
           </header>
@@ -85,7 +84,7 @@ export function LPSplitTracks({ tracks }) {
                 <span className="lp-track-num mono"></span>
                 <div>
                   <h4>{it.t}</h4>
-                  <p>{it.d}</p>
+                  {it.d && <p>{it.d}</p>}
                 </div>
               </li>
             ))}
@@ -110,7 +109,6 @@ export function LPNavReview({ route, navigate }) {
       <LPSplitTracks
         tracks={[
           {
-            key: "A",
             title: "NAV Review",
             lead: "Testing whether the reported NAV has been produced correctly, consistently and in line with standards.",
             items: [
@@ -120,13 +118,22 @@ export function LPNavReview({ route, navigate }) {
             ],
           },
           {
-            key: "B",
             title: "Fair Value Adjustment",
             lead: "Sizing the distance between the reported value and the value realizable in current market conditions.",
             items: [
               { t: "Liquidity Haircuts Estimation", d: "Estimation of liquidity-driven adjustments reflecting exit constraints and market conditions." },
               { t: "Secondary Market Assessments", d: "Assessment of indicative secondary-market pricing and discount dynamics." },
               { t: "Fairness Opinions", d: "Independent fairness opinions, with clear, defensible documentation." },
+            ],
+          },
+          {
+            title: "Additional Valuation Adjustments (AVA)",
+            lead: "We support financial institutions in calculating and validating the Additional Valuation Adjustments (AVAs) required under prudential regulation, ensuring the prudent valuation of financial instruments and compliance with regulatory requirements. The service covers:",
+            items: [
+              { t: "Methodology Definition" },
+              { t: "AVA Calculation" },
+              { t: "Reporting" },
+              { t: "Support During Control and Review Processes" },
             ],
           },
         ]}
