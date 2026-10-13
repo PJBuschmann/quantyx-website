@@ -194,12 +194,27 @@ const PEOPLE = [
   prev: "Senior Legal Counsel · European AIFM" }];
 
 
+/* Headshots: drop a square-ish image named after the person's id
+   (e.g. rb.jpg for Roberto Botter) into src/assets/people/. Vite picks it up
+   at build time; anyone without a photo keeps their initials. */
+const PHOTOS = Object.fromEntries(
+  Object.entries(import.meta.glob("../assets/people/*.{jpg,jpeg,png,webp}", { eager: true, import: "default" }))
+    .map(([path, url]) => [path.split("/").pop().replace(/\.\w+$/, "").toLowerCase(), url])
+);
+
+function Avatar({ p }) {
+  const src = PHOTOS[p.id];
+  return src
+    ? <img className="avatar-photo" src={src} alt={p.name} loading="lazy" />
+    : <span>{p.initials}</span>;
+}
+
 export function PersonTile({ p, i, onClick }) {
   return (
     <button className="person-tile" onClick={onClick} style={{ animationDelay: `${i * 35}ms` }}>
       <div className="person-tile-top">
         <div className="person-tile-avatar">
-          <span>{p.initials}</span>
+          <Avatar p={p} />
           <svg className="person-tile-ring" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" strokeWidth="0.6" strokeDasharray="2 4" />
           </svg>
@@ -273,7 +288,7 @@ export function People({ route, navigate }) {
             </button>
 
             <div className="bio-header">
-              <div className="bio-avatar">{selected.initials}</div>
+              <div className="bio-avatar"><Avatar p={selected} /></div>
               <div className="bio-tag mono">
                 {selected.group === "partner" ? "PARTNER · BOARD" : "MANAGER · FUNCTIONAL LEAD"} · {selected.office.toUpperCase()}
               </div>
@@ -431,13 +446,17 @@ export function People({ route, navigate }) {
         @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
         .bio-panel {
           width: min(560px, 100vw);
-          height: 100vh;
+          height: 100vh; height: 100dvh;
           background: var(--paper);
           overflow-y: auto;
           position: relative;
           animation: slide 0.35s cubic-bezier(.2,.8,.2,1);
           display: flex; flex-direction: column;
         }
+        /* Fixed-height flex column: without this the header shrinks to fit
+           long bios and its overflow:hidden clips the name and role. */
+        .bio-panel > * { flex-shrink: 0; }
+        .avatar-photo { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
         @keyframes slide { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         .bio-close {
           position: absolute; top: 24px; right: 24px;
